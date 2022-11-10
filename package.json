@@ -1,0 +1,22 @@
+{
+  "name": "test-worker-proposal",
+  "version": "0.0.1",
+  "description": "sample implementation of a better protocol for node:test runners",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "node --test ./dist"
+  },
+  "keywords": [
+    "node:test",
+    "testing",
+    "worker",
+    "nodejs",
+    "workerthread"
+  ],
+  "author": "Kieran Mann <kieranjarrettmann@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^18.11.9",
+    "typescript": "^4.8.4"
+  }
+}
