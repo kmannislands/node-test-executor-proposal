@@ -7,7 +7,7 @@
   "scripts": {
     "compile": "tsc -b",
     "test:runner": "node ./dist/index.js",
-    "test:direct": "node ./dist/test.js"
+    "test:direct": "node ./dist/example.test.js"
   },
   "keywords": [
     "node:test",

@@ -1,28 +1,41 @@
-import { Worker } from 'node:worker_threads';
+// import { Worker } from 'node:worker_threads';
+import { fork } from 'node:child_process';
+import path from 'node:path';
 
 interface RunOptions {
-  testPaths: string[];
+    testPaths: string[];
 }
 
 export async function run(options: RunOptions): Promise<number> {
-  const testRuns: Promise<number>[] = [];
-  for (const testPath of options.testPaths) {
-    const testWorker = new Worker(testPath);
+    const testRuns: Promise<number>[] = [];
 
-    testWorker.on('message', (msg) => {
-      console.log('RECEIVING SIDE', msg);
-    });
+    for (const testPath of options.testPaths) {
+        const testWorker = fork(path.resolve(testPath), {
+            stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
+        });
 
-    const testExitPromise = new Promise<number>((resolve) =>
-      testWorker.on('exit', () => {
-        resolve(0);
-      })
-    );
+        console.log('Forked worker');
 
-    testRuns.push(testExitPromise);
-  }
+        testWorker.on('error', (errMsg) => {
+            console.error(errMsg);
+        });
 
-  const testFileResults = await Promise.all(testRuns);
+        testWorker.on('message', (msg) => {
+            console.log('RECEIVING SIDE', msg);
+        });
 
-  return Math.max(...testFileResults);
+        const testExitPromise = new Promise<number>((resolve) =>
+            testWorker.on('exit', () => {
+                resolve(0);
+            })
+        );
+
+        testRuns.push(testExitPromise);
+    }
+
+    const testFileResults = await Promise.all(testRuns);
+
+    console.log('Done with test run');
+
+    return Math.max(...testFileResults);
 }

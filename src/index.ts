@@ -1,5 +1,5 @@
 import { run } from './runner.js';
 
-run({ testPaths: ['./dist/test.js'] }).then((exitCode) => {
+run({ testPaths: ['./dist/example.test.js'] }).then((exitCode) => {
     process.exit(exitCode);
-})
+});
