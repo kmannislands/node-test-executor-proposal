@@ -4,13 +4,28 @@ Simplistic example implementation of different messaging channels for test execu
 to node.js core](https://github.com/nodejs/node/pull/43525#issuecomment-1311628864).
 
 The intent of this repo is to enable discussion on different approaches to communication between test processes
-('executors') and their runner process ('head').
+('executors') and their runner process ('head') that:
+
+- Do not interleave test stdout with test reporting
+- Are still runnable directly with node
 
 This repo contains:
+
 - a single very simplistic test executor implementation called `test` with a similar signature to the
   `node:test` function by the same name
-- a simplistic `run` function also with a similar signature to the `node:test` function by the same nam
+- a simplistic `run` function also with a similar signature to the `node:test` function by the same name
 - a test suite under `src/example.test.ts` used to demonstrate the aforementioned machinery
+
+The variance on the executor-side is constrained to different implementations of a very simple
+`IMessageChannel` interface. When running a test, the executor checks its context to determine if it is being
+executed as a worker, a forked process or directly and creates a message channel class accordingly. The
+message channel classes have minimal logic of their own and are easily substitutable.
+
+The reporter implementation is the same regardless of the execution context. It contains a verifying
+`IMessageChannel` implementation.
+
+On the runner side, the only difference between `worker` and `fork` execution modes is whether a light-weight
+`Worker` process is created or a heavyweight `node` process is forked. This is varied using a command line argument.
 
 ## Running the examples
 
@@ -53,3 +68,10 @@ messages from the test executors back to the test runner head process.
 ```sh
 node ./dist/index.js --executionMode fork
 ```
+
+## Future experiments
+
+This is currently missing a `spawn` implementation. It should be fairly trivial to add since its very similar
+mechanically to `fork`.
+
+It would also be interesting to add a `cluster` implementation.
