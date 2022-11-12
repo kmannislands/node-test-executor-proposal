@@ -1,6 +1,5 @@
 import { getMessagingChannel, IMessageChannel } from './message-channels.js';
 
-type TestFunction = (() => void) | (() => Promise<void>);
 class Reporter {
     constructor(
         private testId: string,
@@ -28,6 +27,8 @@ class Reporter {
         });
     }
 }
+
+type TestFunction = (() => void) | (() => Promise<void>);
 
 /**
  * Very simplistic `test` function to demonstrate re-use of reporter with different messaging channels
