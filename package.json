@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "compile": "tsc -b",
-    "test:runner": "node ./dist/index.js",
+    "test:worker": "node ./dist/index.js --executionMode worker",
+    "test:fork": "node ./dist/index.js --executionMode fork",
     "test:direct": "node ./dist/example.test.js"
   },
   "keywords": [
